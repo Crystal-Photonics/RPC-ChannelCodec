@@ -11,7 +11,7 @@
 #define CHANNEL_CODEC_PREAMBLE_LENGTH 3
 
 #include "channel_codec/channel_codec_config.h"
-
+#include <stdint.h>
 
 typedef enum{csNone,
 	csFoundPreamble,
