@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<RPC>
-<function name="emptyTest">
-    <declaration>RPC_UART_RESULT emptyTest();</declaration>
-	<request ID="4"/>
-	<reply ID="5"/>
-</function>
-</RPC>

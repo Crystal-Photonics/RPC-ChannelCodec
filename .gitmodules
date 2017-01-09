@@ -1,6 +1,0 @@
-[submodule "project/libs/googletest"]
-	path = project/libs/googletest
-	url = https://github.com/google/googletest.git
-[submodule "project/libs/RPC-ChannelCodec"]
-	path = project/libs/RPC-ChannelCodec
-	url = https://github.com/pioupus/RPC-ChannelCodec.git
