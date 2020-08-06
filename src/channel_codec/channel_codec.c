@@ -6,8 +6,9 @@
  */
 
 #include <stdbool.h>
-
+#include "nrf_log.h"
 #include <stdio.h>
+#include <assert.h>
 #include "errorlogger/generic_eeprom_errorlogger.h"
 #include "channel_codec/channel_codec.h"
 #include "channel_codec/rpc_channel_codec_crc16.h"
@@ -278,7 +279,7 @@ void channel_push_byte_to_RPC(channel_codec_instance_t *instance, unsigned char 
         reset_rx(instance);
         instance->i.ccChannelState = csFoundPreamble;
 #if 0
-		printf("found preamble\n");
+        NRF_LOG_INFO("csFoundPreamble");
 #endif
     }
     switch (instance->i.ccChannelState) {
@@ -292,7 +293,7 @@ void channel_push_byte_to_RPC(channel_codec_instance_t *instance, unsigned char 
         case csLoadingPayload:
             channel_decode(instance, byte);
 #if 0
-		printf("payload[%d] %02X\n",channel_rx_write_pointer-1, byte);
+            NRF_LOG_INFO("payload[%d] %02X", instance->i.rxState.writePointer - 1, byte);
 #endif
             if (instance->i.rxState.messageResult.result != RPC_SUCCESS) {
 
@@ -302,7 +303,7 @@ void channel_push_byte_to_RPC(channel_codec_instance_t *instance, unsigned char 
                 }
 
 #if 0
-			printf("%d, %d %d\n",channel_rx_message_size.size,channel_rx_message_size.result, channel_rx_write_pointer);
+                NRF_LOG_INFO("%d, %d %d",channel_rx_message_size.size,channel_rx_message_size.result, channel_rx_write_pointer);
 #endif
             }
             if ((instance->i.rxState.messageResult.result == RPC_SUCCESS) &&
@@ -313,7 +314,7 @@ void channel_push_byte_to_RPC(channel_codec_instance_t *instance, unsigned char 
         case csPayloadComplete:
             appendByteToRXBuffer(instance, byte); // receive CRC
 #if 0
-		printf("channel_rx_payload_complete %d\n",channel_rx_write_pointer);
+            NRF_LOG_INFO("channel_rx_payload_complete %d", instance->i.rxState.writePointer);
 #endif
             if (instance->i.rxState.messageResult.size + CRC_LENGTH == instance->i.rxState.writePointer) {
                 instance->i.ccChannelState = csCRCAndPackageComplete;
@@ -327,15 +328,16 @@ void channel_push_byte_to_RPC(channel_codec_instance_t *instance, unsigned char 
             uint8_t crc_16_msb = crc16val >> 8;
             uint8_t crc_16_lsb = crc16val & 0xFF;
 #if 0
-			for (int i=0;i<channel_rx_write_pointer-2;i++){
-				printf("%02X ",(unsigned char)channel_rx_buffer[i]);
-			}
+            for (int i = 0; i < instance->i.rxState.writePointer - 2; i++) {
+                NRF_LOG_INFO("%02X ", (unsigned char)instance->i.rxState.buffer[i]);
+            }
 
+            NRF_LOG_INFO("\n   [%d]%02X  %02X  \n", instance->i.rxState.writePointer - 1,
+                         (unsigned char)instance->i.rxState.buffer[instance->i.rxState.writePointer - CRC_LENGTH + 1], crc_16_msb);
+            NRF_LOG_INFO("   [%d]%02X  %02X  \n", instance->i.rxState.writePointer - 2,
+                         (unsigned char)instance->i.rxState.buffer[instance->i.rxState.writePointer - CRC_LENGTH], crc_16_lsb);
 
-			printf("\n   [%d]%02X  %02X  \n",channel_rx_write_pointer-1,(unsigned char)channel_rx_buffer[channel_rx_write_pointer-CRC_LENGTH+1],crc_16_msb);
-			printf("   [%d]%02X  %02X  \n",channel_rx_write_pointer-2,(unsigned char)channel_rx_buffer[channel_rx_write_pointer-CRC_LENGTH],crc_16_lsb);
-
-			printf("%04X ",crc16val);
+            NRF_LOG_INFO("%04X ", crc16val);
 #endif
             if ((crc_16_msb == (unsigned char)instance->i.rxState.buffer[instance->i.rxState.writePointer - CRC_LENGTH + 1]) &&
                 (crc_16_lsb == (unsigned char)instance->i.rxState.buffer[instance->i.rxState.writePointer - CRC_LENGTH])) {
