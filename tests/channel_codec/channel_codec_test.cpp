@@ -234,12 +234,12 @@ TEST(channel_codec, Initialization)
 		CHECK_EQUAL(0,instances[i].i.txState.writePointer);
 		CHECK_EQUAL(0,instances[i].i.txState.bitMaskPositionInBuffer);
 		CHECK_EQUAL(0,instances[i].i.txState.indexInBlock);
-		CHECK_EQUAL(CHANNEL_CODEC_TX_BUFFER_SIZE,instances[i].i.txState.bufferLength);
+		CHECK_EQUAL(CHANNEL_CODEC_TX_BUFFER_SIZE,(unsigned long)instances[i].i.txState.bufferLength);
 
 		CHECK_EQUAL(0,instances[i].i.rxState.writePointer);
 		CHECK_EQUAL(0,instances[i].i.rxState.bitmask);
 		CHECK_EQUAL(0,instances[i].i.rxState.indexInBlock);
-		CHECK_EQUAL(CHANNEL_CODEC_RX_BUFFER_SIZE,instances[i].i.rxState.bufferLength);
+		CHECK_EQUAL(CHANNEL_CODEC_RX_BUFFER_SIZE,(unsigned long)instances[i].i.rxState.bufferLength);
 	}
 	channel_uninit_instance(&instances[channel_codec_comport_uart]);
 	CHECK_EQUAL(0,channel_is_initialized(&instances[channel_codec_comport_uart]));
@@ -369,7 +369,7 @@ TEST(channel_codec, channel_commit_from_RPC)
 	CHECK_EQUAL(0xBD,(unsigned char)instances[cp].i.txState.buffer[22]);
 #endif
 	mock().checkExpectations();
-
+	(void)result;
 }
 #endif
 
@@ -435,7 +435,7 @@ TEST(channel_codec, channel_push_to_RPC_bufsize)
 	channel_push_byte_to_RPC(&instances[cp],0x00);
 	channel_push_byte_to_RPC(&instances[cp],0x00);
 	CHECK_EQUAL(RPC_COMMAND_INCOMPLETE,instances[cp].i.rxState.messageResult.result);
-	CHECK_EQUAL(10,instances[cp].i.rxState.messageResult.size);
+	CHECK_EQUAL(10,(unsigned long)instances[cp].i.rxState.messageResult.size);
 #if CHANNEL_BLOCKLENGTH == 8
 	channel_push_byte_to_RPC(0x0E);
 #endif
@@ -452,7 +452,7 @@ TEST(channel_codec, channel_push_to_RPC_bufsize)
 	channel_push_byte_to_RPC(&instances[cp],0x01);
 #endif
 	CHECK_EQUAL(RPC_COMMAND_UNKNOWN,instances[cp].i.rxState.messageResult.result);
-	CHECK_EQUAL(10,instances[cp].i.rxState.messageResult.size);
+	CHECK_EQUAL(10,(unsigned long)instances[cp].i.rxState.messageResult.size);
 	mock().checkExpectations();
 }
 #endif

@@ -2,7 +2,7 @@
 
 
 #UNIXTOOLS = "C:\Program Files (x86)\Git\bin\"
-UNIXTOOLS = "C:\Program Files (x86)\Git\usr\bin\"
+#UNIXTOOLS = "C:/Progra~1/Git/usr/bin/"
 RUNTEST=false
 RUNPROD=true
 
@@ -58,11 +58,11 @@ ifeq ($(RUNTEST),true)
 	CPPUTEST_WARNINGFLAGS += -Wall 
 	CPPUTEST_WARNINGFLAGS += -Werror 
 	CPPUTEST_WARNINGFLAGS += -Wswitch-default 
-	CPPUTEST_WARNINGFLAGS += -Wswitch-enum  -Wno-unknown-pragmas
+	CPPUTEST_WARNINGFLAGS += -Wswitch-enum  -Wno-unknown-pragmas -Wno-implicit-fallthrough 
 	CPPUTEST_CFLAGS += -std=c99
 	CPPUTEST_CFLAGS += -Wextra 
 	#CPPUTEST_CFLAGS += -pedantic 
-	CPPUTEST_CFLAGS += -Wstrict-prototypes
+	#CPPUTEST_CFLAGS += -Wstrict-prototypes
 
 
 
