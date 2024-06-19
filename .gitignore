@@ -38,3 +38,4 @@ builds/*
 /project/libs/build/googletest
 
 channel_codec_tests.txt
+/*.exe
